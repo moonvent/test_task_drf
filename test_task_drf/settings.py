@@ -46,11 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
 ]
 
 
 # use another list for custom apps for more clear code and DRY
 DEV_APPS = ['posts',               # app for work with teasers from authors
+            'custom_auth',         # app for work users auth system
             ]
 
 INSTALLED_APPS += [f'{DJANGO_APPS_FOLDER}.{app}' for app in DEV_APPS]
