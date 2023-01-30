@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from django_apps.posts.models import Comment, Post
-from services.constants import COMMENT_NOT_EXISTS
+from services.constants import COMMENT_NOT_EXISTS, RETURN_ALL_COMMENTS_FLAG
+from services.django_apps.posts.models.comment import get_all_comments_by_post
+from services.django_apps.posts.views.post import get_last_comment_data
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -17,10 +19,22 @@ class PostSerializer(serializers.ModelSerializer):
     last_comment = serializers.SerializerMethodField()
 
     def get_last_comment(self, 
-                         post: Post):
-        query_set = Comment.objects.filter(post=post).order_by('-id')[:1]
-        comments = CommentSerializer(query_set, many=True, read_only=True).data
-        return comments[0] if comments else COMMENT_NOT_EXISTS
+                         post: Post) -> str | dict:
+        """
+            Get last comment
+            :return: if not exists return string {COMMENT_NOT_EXISTS} else dict with pk and text
+        """
+        result = None
+
+        if RETURN_ALL_COMMENTS_FLAG in self.context:
+            #
+            # result = get_all_comments_by_post(post=post)
+            # make return all comment with serializing
+
+        else:
+            result = get_last_comment_data(post=post)
+
+        return result
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -32,9 +46,10 @@ class CommentSerializer(serializers.ModelSerializer):
     posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+# class UserSerializer(serializers.ModelSerializer):
+#     posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#
+#     class Meta:
+#         model = User
+#         fields = ('id', 'username', 'posts')
 
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'posts')

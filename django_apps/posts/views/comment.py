@@ -7,6 +7,7 @@ from django_apps.posts.models import Comment, Post
 from django_apps.posts.pagination import CommentPagination, PostsPagination
 from django_apps.posts.permissions import IsOwnerOrReadOnly
 from django_apps.posts.serializers import CommentSerializer, PostSerializer
+from services.django_apps.posts.models.comment import get_all_comments_by_post
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -19,7 +20,7 @@ class CommentList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        return Comment.objects.filter(post_id=self.request.parser_context['kwargs'].get('post_id'))
+        return get_all_comments_by_post(post=self.request.parser_context['kwargs'].get('post_id'))
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):

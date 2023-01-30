@@ -15,3 +15,4 @@ class Success:
 
 
 COMMENT_NOT_EXISTS = 'Not exist'
+RETURN_ALL_COMMENTS_FLAG = 'return_all_comments'
