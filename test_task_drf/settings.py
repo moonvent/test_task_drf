@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+import sys
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,14 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(-d5aazz-_g#&&ot+)n(_%=8^vr7i6h!1(7ix-n^_#w9d_n_@i'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DJANGO_APPS_FOLDER = os.environ['DJANGO_APPS_FOLDER']
+PROJECT_ROOT = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(PROJECT_ROOT, DJANGO_APPS_FOLDER))
 
 # Application definition
 
@@ -37,7 +45,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
+
+
+# use another list for custom apps for more clear code and DRY
+DEV_APPS = ['posts',               # app for work with teasers from authors
+            ]
+
+INSTALLED_APPS += [f'{DJANGO_APPS_FOLDER}.{app}' for app in DEV_APPS]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
