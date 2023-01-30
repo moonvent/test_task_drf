@@ -10,6 +10,7 @@ from django_apps.posts.serializers import CommentSerializer, PostSerializer
 
 
 class CommentList(generics.ListCreateAPIView):
+    # queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -22,7 +23,7 @@ class CommentList(generics.ListCreateAPIView):
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]

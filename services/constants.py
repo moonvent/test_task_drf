@@ -13,3 +13,5 @@ class Success:
     LOGGED = 'User in system'
     LOGOUT = 'User out from system'
 
+
+COMMENT_NOT_EXISTS = 'Not exist'

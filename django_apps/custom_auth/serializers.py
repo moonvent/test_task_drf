@@ -37,18 +37,12 @@ class LoginSerializer(serializers.Serializer):
 
         error_message = None
 
-        if username and password:
+        # Try to authenticate the user using Django auth framework.
+        user = authenticate(request=request,
+                            username=username, password=password)
 
-            # Try to authenticate the user using Django auth framework.
-            user = authenticate(request=request,
-                                username=username, password=password)
-
-            if not user:
-                error_message = Errors.INCORRECT_DATA
-
-        else:
-            error_message = Errors.REQUIRED_BOTH_FIELDS
-
+        if not user:
+            error_message = Errors.INCORRECT_DATA
 
         # If we have error message, raise a ValidationError
         if error_message:
