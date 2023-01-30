@@ -21,15 +21,14 @@ class PostSerializer(serializers.ModelSerializer):
     def get_last_comment(self, 
                          post: Post) -> str | dict:
         """
-            Get last comment
+            Get last comment, or if on post-detail view, return all comments
             :return: if not exists return string {COMMENT_NOT_EXISTS} else dict with pk and text
         """
         result = None
 
         if RETURN_ALL_COMMENTS_FLAG in self.context:
-            #
-            # result = get_all_comments_by_post(post=post)
-            # make return all comment with serializing
+            comments = get_all_comments_by_post(post=post)
+            result = CommentSerializer(comments, many=True, read_only=True).data
 
         else:
             result = get_last_comment_data(post=post)
