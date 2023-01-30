@@ -5,6 +5,6 @@ from django_apps.posts.apps import APP_NAME as POST_APP_NAME
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('post/', include(f'{POST_APP_NAME}.urls')),
+    path('api/', include(f'{POST_APP_NAME}.urls')),
 ]
 
