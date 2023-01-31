@@ -13,7 +13,7 @@ from tests.django_apps.posts.views.post.test_list import add_comments, serialize
 from tests.general_assert_tests import response_result_compare
 
 
-@tag('post_detail')
+@tag('post', 'post_detail')
 class PostDetailTestCase(APITestCase):
     user: User = None
 
@@ -32,7 +32,7 @@ class PostDetailTestCase(APITestCase):
 
     def _test_retrieve_post(self):
         """
-            Test getting post with other conditions
+            Test getting post with different conditions
         """
         post_data = serialize_all_post(detail_view=True)[0]
 
@@ -45,7 +45,7 @@ class PostDetailTestCase(APITestCase):
     def _test_patch_post(self, 
                          fixtures: tuple[dict, ...]):
         """
-            Test patch the post with needed_fixtures
+            Test patch the post with needed fixtures
         """
         for fixture in fixtures:
             actual_response = self.client.patch(self.post_detail_url,
@@ -59,15 +59,9 @@ class PostDetailTestCase(APITestCase):
                              actual_response.data)
 
     def test_correct_retrieve_post(self):
-        """
-            Test check detail about post
-        """
         self._test_retrieve_post()
 
     def test_correct_retrieve_post_with_comments(self):
-        """
-            Test check detail about post with comments
-        """
         add_comments(user=self.user,
                      amount_comments=50)
         self._test_retrieve_post()
@@ -92,17 +86,11 @@ class PostDetailTestCase(APITestCase):
         self._test_patch_post(fixtures=fixtures)
 
     def test_correct_delete_post(self):
-        """
-            Test correct post deletion
-        """
         actual_response = self.client.delete(self.post_detail_url)
 
         response_result_compare(self, actual_response, status.HTTP_204_NO_CONTENT)
 
     def test_incorrect_delete_post(self):
-        """
-            Test post deletion
-        """
         Post.objects.all().delete()
 
         actual_response = self.client.delete(self.post_detail_url)
@@ -111,7 +99,7 @@ class PostDetailTestCase(APITestCase):
 
     def test_manipulate_without_auth(self):
         """
-            Test manipulate without auth
+            Test delete/update the post without auth
         """
         self.client.logout()
 
@@ -128,7 +116,7 @@ class PostDetailTestCase(APITestCase):
 
     def test_manipulate_without_owner_rights(self):
         """
-            Test manipulate without owner rights
+            Test delete/update without owner rights
         """
         self.client.logout()
 

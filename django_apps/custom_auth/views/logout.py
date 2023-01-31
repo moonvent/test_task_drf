@@ -18,12 +18,13 @@ class LogoutView(APIView):
             format=None):
 
         if request.user.is_authenticated:
-
+            # if in system - logout
             logout(request)
             response = Response(success_response(description=Success.LOGOUT), 
                         status=status.HTTP_202_ACCEPTED)
 
         else:
+            # if not in system drop the error
             response = Response(error_response(description=Errors.NOT_LOGGED), 
                         status=status.HTTP_400_BAD_REQUEST)
 

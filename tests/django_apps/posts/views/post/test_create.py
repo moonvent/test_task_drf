@@ -11,7 +11,7 @@ from tests.django_apps.posts.views.post.post_factory import PostFactory
 from tests.general_assert_tests import response_result_compare
 
 
-@tag('post_create')
+@tag('post', 'post_create')
 class PostCreateTestCase(APITestCase):
     user: User = None
 
@@ -24,10 +24,6 @@ class PostCreateTestCase(APITestCase):
         self.client.force_login(user=self.user)
 
     def test_correct_post_creation(self):
-        """
-            test correct post creation
-        """
-
         post_data = PostSerializer(PostFactory(owner=self.user)).data
         del post_data['id'], post_data['creation_date'], post_data['views'], post_data['owner']
 
@@ -59,9 +55,6 @@ class PostCreateTestCase(APITestCase):
             self.assertEqual(serializer.errors, actual_response.data)
 
     def test_incorrect_post_creation_without_auth(self):
-        """
-            test INcorrect post creation without auth
-        """
         self.client.logout()
 
         post_serializer = PostSerializer(PostFactory(owner=self.user))

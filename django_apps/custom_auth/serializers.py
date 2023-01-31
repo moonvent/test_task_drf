@@ -29,7 +29,7 @@ class LoginSerializer(serializers.Serializer):
         request = self.context.get('request')
 
         if request.user.is_authenticated:
-            raise serializers.ValidationError(msg, code='authorization')
+            raise serializers.ValidationError(Errors.ALREADY_IN_SYSTEM, code='authorization')
 
         # Take username and password from request
         username = attrs.get('username')
@@ -39,7 +39,8 @@ class LoginSerializer(serializers.Serializer):
 
         # Try to authenticate the user using Django auth framework.
         user = authenticate(request=request,
-                            username=username, password=password)
+                            username=username,
+                            password=password)
 
         if not user:
             error_message = Errors.INCORRECT_DATA

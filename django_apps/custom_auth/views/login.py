@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.contrib.auth.models import User
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from rest_framework.views import APIView, status
 from django_apps.custom_auth.serializers import LoginSerializer
 from services.constants import Success
 from services.response_types import success_response
+from tests.django_apps.custom_auth.user_factory import UserFactory
 
 
 class LoginView(APIView):
@@ -27,3 +29,4 @@ class LoginView(APIView):
 
         return Response(success_response(description=Success.LOGGED), 
                         status=status.HTTP_202_ACCEPTED)
+

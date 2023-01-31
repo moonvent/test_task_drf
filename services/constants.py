@@ -7,6 +7,7 @@ class Errors:
     REQUIRED_BOTH_FIELDS = 'Both "username" and "password" are required.'
 
     NOT_LOGGED = 'User not in system'
+    ALREADY_IN_SYSTEM = 'User already in system'
 
 
 class Success:

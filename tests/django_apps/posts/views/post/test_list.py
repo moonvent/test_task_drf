@@ -60,7 +60,7 @@ def add_comments(user: User,
                            post=post)
 
 
-@tag('post_list')
+@tag('post', 'post_list')
 class PostListTests(APITestCase):
     user: User = None
     post_list_url = reverse('post_list')
@@ -72,20 +72,14 @@ class PostListTests(APITestCase):
             PostFactory(owner=self.user)
 
     def test_get_post_list(self):
-        """
-            Test getting post list
-        """
         self._get_and_compare_result()
 
     def test_get_post_list_with_comments(self):
-        """
-            Test getting post list with a few comments
-        """
         add_comments(user=self.user)
 
         self._get_and_compare_result()
 
-    def test_get_no_post(self):
+    def test_get_posts_list_without_posts(self):
         """
             Test getting post list with zero post
         """
@@ -94,9 +88,6 @@ class PostListTests(APITestCase):
         self._get_and_compare_result()
         
     def test_get_post_list_with_pagination(self):
-        """
-            Test getting post list with pagination
-        """
 
         general_amount_posts = 37
 
