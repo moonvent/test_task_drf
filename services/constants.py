@@ -16,3 +16,11 @@ class Success:
 
 COMMENT_NOT_EXISTS = 'Not exist'
 RETURN_ALL_COMMENTS_FLAG = 'return_all_comments'
+
+CONTENT_TYPE_JSON = 'application/json'
+
+POSTS_PAGE_SIZE = 10
+MAX_POSTS_PAGE_SIZE = 20
+
+COMMENT_PAGE_SIZE = 20
+MAX_COMMENT_PAGE_SIZE = 50

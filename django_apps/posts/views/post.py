@@ -12,10 +12,15 @@ from services.django_apps.posts.models.post import add_view_point
 from services.django_apps.posts.views.post import get_comments_data_for_one_post
 
 
-class PostList(generics.ListCreateAPIView):
+class PostList(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     pagination_class = PostsPagination
+
+
+class PostCreate(generics.CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
