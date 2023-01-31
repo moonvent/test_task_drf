@@ -47,15 +47,15 @@ My initiate create a custom auth system for test manually, write the tests and a
   `python manage.py test --tag=post_list`
 
   All tags:
-    * Posts (tag: post) specify:
-      - post_list - test post list controller
-      - post_create - test post creation controller
-      - post_detail - test post detail view (retrieve, update, delete) controller
-    * Comments:
-      - maybe will comming...
-    * Custom Auth (tag: custom_auth) specify:
-      - login - test login controller
-      - logout - test logout contoller
+  * Posts (tag: post) specify:
+    - post_list - test post list controller
+    - post_create - test post creation controller
+    - post_detail - test post detail view (retrieve, update, delete) controller
+  * Comments:
+    - maybe will comming...
+  * Custom Auth (tag: custom_auth) specify:
+    - login - test login controller
+    - logout - test logout contoller
 
 
 ## Table with timetracking
