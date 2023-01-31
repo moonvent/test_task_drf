@@ -9,4 +9,4 @@ services:
     volumes:
       - .:/code
     ports:
-      - 43202:8000
+      - ${DOCKER_PORT}:8000

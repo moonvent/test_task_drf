@@ -1,6 +1,7 @@
 import math
 from typing import OrderedDict
 from django.contrib.auth.models import User
+from django.test import tag
 from django.test.client import JSON_CONTENT_TYPE_RE
 from django.urls import reverse
 from rest_framework import status
@@ -25,6 +26,7 @@ def serialize_all_post(page_number: int = 0,
     if not page_number:
         result = PostSerializer(Post.objects.all(), 
                                 many=True).data
+
     else:
         offset_from, limit_to = (page_number - 1) * page_size, page_number * page_size
         result = PostSerializer(Post.objects.all()[offset_from:limit_to], 
@@ -33,8 +35,10 @@ def serialize_all_post(page_number: int = 0,
     return result
 
 
+@tag('post_list')
 class PostListTests(APITestCase):
     user: User = None
+    post_list_url = reverse('post_list')
 
     def setUp(self) -> None:
         self.user = UserFactory()
@@ -46,9 +50,7 @@ class PostListTests(APITestCase):
         """
             Test getting post list
         """
-        url = reverse('post_list')
-
-        actual_response = self.client.get(url)
+        actual_response = self.client.get(self.post_list_url)
 
         response_result_compare(self, 
                                 actual_response,
@@ -63,11 +65,9 @@ class PostListTests(APITestCase):
         """
             Test getting post list with zero post
         """
-        url = reverse('post_list')
-
         Post.objects.all().delete()
 
-        actual_response = self.client.get(url)
+        actual_response = self.client.get(self.post_list_url)
 
         response_result_compare(self, 
                                 actual_response,
@@ -82,7 +82,6 @@ class PostListTests(APITestCase):
         """
             Test getting post list with pagination
         """
-        url = reverse('post_list')
 
         general_amount_posts = 37
 
@@ -90,7 +89,7 @@ class PostListTests(APITestCase):
             PostFactory(owner=self.user)
 
         for page_number in range(1, math.ceil(general_amount_posts / 10) + 1):
-            actual_response = self.client.get(url + f'?page={page_number}')
+            actual_response = self.client.get(self.post_list_url + f'?page={page_number}')
 
             response_result_compare(self, 
                                     actual_response,
