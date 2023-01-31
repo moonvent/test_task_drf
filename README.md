@@ -77,7 +77,7 @@ My initiate create a custom auth system for test manually, write the tests and a
 | 21:48            	| Complete output all comments in post detail                                  	|
 | 21:56            	| Complete view add functional                                                 	|
 | 23:37            	| Start write the tests, install additional dependencies for tests             	|
-| 09:45            	| AFK                                                                          	|
+| 2023-01-31 09:45 	| AFK                                                                          	|
 | 10:37            	| Completed post list tests; Refactor post list and post create routes         	|
 | 11:55            	| Completed post create route test, start fill readme.md                       	|
 | 12:16            	| AFK                                                                          	|
