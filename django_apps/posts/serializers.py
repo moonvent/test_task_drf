@@ -28,7 +28,10 @@ class PostSerializer(serializers.ModelSerializer):
 
         if RETURN_ALL_COMMENTS_FLAG in self.context:
             comments = get_all_comments_by_post(post=post)
-            result = CommentSerializer(comments, many=True, read_only=True).data
+            if not comments:
+                result = COMMENT_NOT_EXISTS
+            else:
+                result = CommentSerializer(comments, many=True, read_only=True).data
 
         else:
             result = get_last_comment_data(post=post)

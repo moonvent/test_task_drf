@@ -21,13 +21,12 @@ class PostCreateTestCase(APITestCase):
 
     def setUp(self) -> None:
         self.user = UserFactory()
+        self.client.force_login(user=self.user)
 
     def test_correct_post_creation(self):
         """
             test correct post creation
         """
-
-        self.client.force_login(user=self.user)
 
         post_data = PostSerializer(PostFactory(owner=self.user)).data
         del post_data['id'], post_data['creation_date'], post_data['views'], post_data['owner']
@@ -42,8 +41,6 @@ class PostCreateTestCase(APITestCase):
         """
             test INcorrect post creation with incorrect data
         """
-
-        self.client.force_login(user=self.user)
         fixtures = [{}, 
                     {'title': '1'},
                     {'title': '1' * 1000,
@@ -65,8 +62,10 @@ class PostCreateTestCase(APITestCase):
         """
             test INcorrect post creation without auth
         """
+        self.client.logout()
 
-        post_data = PostSerializer(PostFactory(owner=self.user)).data
+        post_serializer = PostSerializer(PostFactory(owner=self.user))
+        post_data = dict(post_serializer.data)
         del post_data['id'], post_data['creation_date'], post_data['views'], post_data['owner']
 
         actual_response = self.client.post(self.post_create_url,

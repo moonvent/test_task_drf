@@ -1,10 +1,12 @@
 import os
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import include, path
 from django_apps.posts.views import post, comment
 
 
 urlpatterns = [
+    path('posts/', lambda request: redirect('post_list')),
     path('posts/list/', post.PostList.as_view(), name='post_list'),
     path('posts/<int:pk>/', post.PostDetail.as_view(), name='post_detail'),
     path('posts/create/', post.PostCreate.as_view(), name='post_create'),

@@ -1,7 +1,9 @@
 # Test task with Django Rest Framework (DRF)
 
 
-## Test task will comming soon...
+## Test task
+
+Will comming soon...
 
 
 ## Project quickstart
