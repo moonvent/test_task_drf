@@ -16,28 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = ('views',)
 
     owner = serializers.ReadOnlyField(source='owner.username')
-    last_comment = serializers.SerializerMethodField()
-
-    def get_last_comment(self, 
-                         post: Post) -> str | dict:
-        """
-            Get last comment, or if on post-detail view, return all comments
-            :return: if not exists return string {COMMENT_NOT_EXISTS} else dict with pk and text
-        """
-        result = None
-
-        if RETURN_ALL_COMMENTS_FLAG in self.context:
-            comments = get_all_comments_by_post(post=post)
-            if not comments:
-                result = COMMENT_NOT_EXISTS
-            else:
-                result = CommentSerializer(comments, many=True, read_only=True).data
-
-        else:
-            result = get_last_comment_data(post=post)
-
-        return result
-
+    comments = serializers.SlugRelatedField(many=True, slug_field='text', read_only=True)
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

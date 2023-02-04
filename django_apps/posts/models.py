@@ -23,7 +23,8 @@ class Comment(models.Model):
     owner = models.ForeignKey(User,
                               on_delete=models.CASCADE)
     post = models.ForeignKey(Post, 
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,
+                             related_name='comments')
     text = models.CharField(max_length=256)
     creation_date = models.DateTimeField(auto_now_add=True)
 

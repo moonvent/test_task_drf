@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from django_apps.posts.models import Post
 from django_apps.posts.pagination import PostsPagination
@@ -13,11 +14,20 @@ from services.django_apps.posts.views.post import get_comments_data_for_one_post
 
 
 class PostList(generics.ListAPIView):
-    queryset = Post.objects.all()
+    queryset = Post.objects.prefetch_related('comments').all()
     serializer_class = PostSerializer
     pagination_class = PostsPagination
 
+    def list(self, request):
+        queryset = (Post
+                    .objects
+                    .prefetch_related('comments')
+                    .prefetch_related('owner')
+                    .all())
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
 
+    
 class PostCreate(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
