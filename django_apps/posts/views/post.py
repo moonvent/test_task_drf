@@ -13,25 +13,17 @@ from services.django_apps.posts.models.post import add_view_point
 from services.django_apps.posts.views.post import get_comments_data_for_one_post
 
 
-class PostList(generics.ListAPIView):
-    queryset = Post.objects.prefetch_related('comments').all()
+class PostList(generics.ListCreateAPIView):
+    # for eliminate unnecessary database hits
+    queryset = (Post
+                .objects
+                .prefetch_related('comments')
+                .prefetch_related('owner')
+                .all())
     serializer_class = PostSerializer
     pagination_class = PostsPagination
-
-    def list(self, request):
-        queryset = (Post
-                    .objects
-                    .prefetch_related('comments')
-                    .prefetch_related('owner')
-                    .all())
-        serializer = PostSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    
-class PostCreate(generics.CreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -47,6 +39,5 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer: PostSerializer = super(PostDetail, self).get_serializer(*args, **kwargs)
         serializer.context.update({RETURN_ALL_COMMENTS_FLAG: 1})
         add_view_point(self.get_object())
-        # serializer.data.last_comment = get_comments_data_for_one_post(post=self.get_object())
         return serializer
 

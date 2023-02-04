@@ -158,6 +158,7 @@ if DEBUG:
     l.addHandler(logging.StreamHandler())
 
 
+# for correct debug with db queries
 LOGGING = {
     'version': 1,
     'filters': {

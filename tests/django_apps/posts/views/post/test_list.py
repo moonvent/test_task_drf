@@ -60,10 +60,10 @@ def add_comments(user: User,
                            post=post)
 
 
-@tag('post', 'post_list')
+@tag('post')
 class PostListTests(APITestCase):
     user: User = None
-    post_list_url = reverse('post_list')
+    post_create_url = post_list_url = reverse('post_list')
 
     def setUp(self) -> None:
         self.user = UserFactory()
@@ -71,14 +71,17 @@ class PostListTests(APITestCase):
         for _ in range(10):
             PostFactory(owner=self.user)
 
+    @tag('post_list')
     def test_get_post_list(self):
         self._get_and_compare_result()
 
+    @tag('post_list')
     def test_get_post_list_with_comments(self):
         add_comments(user=self.user)
 
         self._get_and_compare_result()
 
+    @tag('post_list')
     def test_get_posts_list_without_posts(self):
         """
             Test getting post list with zero post
@@ -87,6 +90,7 @@ class PostListTests(APITestCase):
 
         self._get_and_compare_result()
         
+    @tag('post_list')
     def test_get_post_list_with_pagination(self):
 
         general_amount_posts = 37
@@ -121,7 +125,55 @@ class PostListTests(APITestCase):
         """
             Comparing responses data results (only data)
         """
-        self.assertEqual(actual_response.data['results'], 
+        self.assertEqual(actual_response.data['results'],
                          expected_response)
 
+    @tag('post_create')
+    def test_correct_post_creation(self):
+        self.client.force_login(user=self.user)
+        post_data = PostSerializer(PostFactory(owner=self.user)).data
+        del post_data['id'], post_data['creation_date'], post_data['views'], post_data['owner']
 
+        actual_response = self.client.post(self.post_create_url,
+                                           data=post_data)
+
+        response_result_compare(self, actual_response, status.HTTP_201_CREATED)
+        self.assertDictContainsSubset(post_data, actual_response.data)
+
+    @tag('post_create')
+    def test_incorrect_post_creation_with_incorrect_data(self):
+        """
+            test INcorrect post creation with incorrect data
+        """
+        self.client.force_login(user=self.user)
+        fixtures = [{}, 
+                    {'title': '1'},
+                    {'title': '1' * 1000,
+                     'text': '1'},
+                    ]
+
+        for fixture in fixtures:
+            actual_response = self.client.post(self.post_create_url,
+                                               data=fixture)
+
+            response_result_compare(self, actual_response, status.HTTP_400_BAD_REQUEST)
+
+            serializer = PostSerializer(data=fixture)
+            serializer.is_valid()
+
+            self.assertEqual(serializer.errors, actual_response.data)
+
+    @tag('post_create')
+    def test_incorrect_post_creation_without_auth(self):
+        # self.client.logout()
+
+        post_serializer = PostSerializer(PostFactory(owner=self.user))
+        post_data = dict(post_serializer.data)
+        del post_data['id'], post_data['creation_date'], post_data['views'], post_data['owner']
+
+        actual_response = self.client.post(self.post_create_url,
+                                           data=post_data)
+
+        response_result_compare(self, actual_response, status.HTTP_403_FORBIDDEN)
+        self.assertEqual({'detail': 'Authentication credentials were not provided.'}, 
+                          actual_response.json())
